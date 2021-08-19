@@ -1,4 +1,3 @@
-</head>
 <body>
 <div class="slide titlepage">
   <h1 class="title">Data Products: Week 4 Assignment</h1>
