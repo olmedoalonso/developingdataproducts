@@ -1,0 +1,78 @@
+---
+title: 'Data Products: Week 4 Assignment'
+author: "Olmedo Alonso Madrigales"
+date: "8/18/2021"
+output: slidy_presentation
+---
+
+```{r wdirectory, echo=FALSE, message=FALSE, warning=FALSE}
+setwd("C:/Users/Olmedo/Desktop/Coursera/datasciencecoursera/DataProducts/")
+```
+
+```{r libraries, echo=FALSE, message=FALSE, warning=FALSE}
+
+library(readxl)
+library(dplyr)
+library(htmltools)
+library(kableExtra)
+library(plotly)
+library(shiny)
+```
+
+## Introduction
+
+This is an RStudio shiny application developed as a part of final project in the Developing Data Products course in Coursera Data Science Specialization. The application summarizes the amounts of agricultural products brought to our Post Harvest Center (PHC) from the different sites (districts) of our provinces.
+
+The main idea is to have a new way of reporting for the PHC Management´s Office use in order to keep track of the daily, weekly and monthly operations.
+
+## The Application
+
+- Radio button is the input form used
+
+- The user (PHC Manager) can select one or more districts to compare the amount of products from each of them.  This is the reactive output displayed as a result of server calculations. 
+
+- The server.R and ui.R codes are posted at: https://github.com/olmedoalonso/dataproducts/tree/main/shinyapps.io
+
+- The App can be found at: https://olmedoalonso.shinyapps.io/products/
+
+
+## ui.R Code for the APP
+
+```{r uiCode, echo=TRUE, results='hold', message=FALSE, warning=FALSE}
+
+fluidPage(
+  checkboxGroupInput("variable", "DISTRITOS:",
+                     c("CHITRE" = "CHITRE",
+                       "GUARARE" = "GUARARE",
+                       "LAS.MINAS" = "LAS.MINAS",
+                       "LAS.TABLAS" = "LAS.TABLAS",
+                       "LOS.POZOS" = "LOS.POZOS",
+                       "LOS.SANTOS" = "LOS.SANTOS",
+                       "MACARACAS" = "MACARACAS",
+                       "OCU" = "OCU",
+                       "PESE" = "PESE",
+                       "TONOSI" = "TONOSI")),
+  tableOutput("data")
+)
+```
+
+## Server.R Code for the APP
+
+```{r ServerCode, echo=TRUE, results='hold', message=FALSE, warning=FALSE}
+
+function(input, output, session) {
+  output$data <- renderTable({
+    productos[, c("RUBRO", input$variable), drop = FALSE]
+  }, rownames = TRUE)
+}
+```
+
+## Data Analyzed
+
+- This is the data table used in this assignment.  The amount measures is in weight (Kilos).
+
+```{r Productos, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+productos <- read_xlsx("C:/Users/Olmedo/Desktop/Coursera/datasciencecoursera/DataProducts/Products/PmaSolJulio2021.xlsx")
+productos1 <- productos %>% kbl() %>% kable_styling(bootstrap_options = "striped", full_width = F, position = "center") %>% column_spec(2:11, width = "5em")
+productos1
+```
